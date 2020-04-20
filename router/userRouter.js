@@ -10,7 +10,18 @@ router.post('/reg',(req,res)=>{
     let {us,ps}=req.body
     if(us&&ps)
     {
-        User.insertMany({us:us,ps:ps})
+        User.find({us})
+        .then((data)=>{
+            if(data.length===0)
+            {
+                return User.insertMany({us:us,ps:ps})
+                
+            }
+            else
+            {
+                res.send({err:-3,msg:'用户名已存在'})
+            }
+        })
         .then(()=>{
             res.send({err:0,msg:'ok'})
         })

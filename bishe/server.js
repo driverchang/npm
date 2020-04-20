@@ -13,15 +13,10 @@ app.use(bodyparser.json())
 //路由
 const userRouter = require('./router/userRouter')
 
-// app.get('/user/login',(req,resser    )=>{
-//     console.log('你好')
-//     res.send({error:0,msg:'ok'})
-// })
-
 
 app.use('/user',userRouter)
 
-app.listen(3020,()=>{
+app.listen(3005,()=>{
     console.log('server start')
 
 })
