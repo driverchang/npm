@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
-var actionSchema = new mongoose.Schema({
-    us : {type:String,required:true},
+var actionLogSchema = new mongoose.Schema({
+    username : {type:String,required:true},
     action : {type:String},
     action_time : {type:Date}
   

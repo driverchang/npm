@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 var assetSchema = new mongoose.Schema({
-    as : {type:String,required:true},
+    assetname : {type:String,required:true},
     ip : {type:String,required:true}
   
 });

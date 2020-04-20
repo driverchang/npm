@@ -1,9 +1,9 @@
 const mongoose = require('mongoose')
 
-var loginlogSchema = new mongoose.Schema({
-    us : {type:String,required:true},
-    log_time : {type:Date,required:true},
-    exit_time : {type:Date}
+var loginLogSchema = new mongoose.Schema({
+    username : {type:String,required:true},
+    log_time : {type:String}
+ //   exit_time : {type:String}
   
 });
 
