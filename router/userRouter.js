@@ -92,11 +92,11 @@ router.post('/update', (req, res) => {
 router.post('/list', (req, res) => {
     userModle.find({})
         .then((data) => {
-            res.send({ err: 0, msg: 'ok' })
-            console.log(data)
+            res.send({ err: 0, msg: '查询成功', list: data })
+
         })
         .catch((err) => {
-            res.send({ err: -1, msg: '失败' })
+            res.send({ err: -1, msg: '查询失败' })
         })
 })
 

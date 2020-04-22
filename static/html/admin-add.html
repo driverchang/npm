@@ -27,7 +27,7 @@
 
 <body>
     <article class="page-container">
-        <form class="form form-horizontal" id="form-admin-add">
+        <div class="form form-horizontal" id="form-admin-add">
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>用户名：</label>
                 <div class="formControls col-xs-8 col-sm-9">
@@ -50,7 +50,7 @@
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span>资产：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input type="text" class="input-text" value="" placeholder="" id="phone" name="phone">
+                    <input type="text" class="input-text" value="" placeholder="" id="asset" name="phone">
                 </div>
             </div>
 
@@ -67,10 +67,10 @@
             </div>
             <div class="row cl">
                 <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-                    <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+                    <input onclick="submit()" class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
                 </div>
             </div>
-        </form>
+        </div>
     </article>
 
     <!--_footer 作为公共模版分离出去-->
@@ -84,68 +84,31 @@
     <script type="text/javascript" src="lib/jquery.validation/1.14.0/jquery.validate.js"></script>
     <script type="text/javascript" src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
     <script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.5.0/jquery.js"></script>
     <script type="text/javascript">
-        $(function() {
-            $('.skin-minimal input').iCheck({
-                checkboxClass: 'icheckbox-blue',
-                radioClass: 'iradio-blue',
-                increaseArea: '20%'
-            });
+        //添加用户信息
+        function submit() {
+            let url = 'http://localhost:3005/user/add'
+            let password2 = $('#password2')
+            let params = {
+                username: $('#adminName').val(),
+                password: $('#password').val(),
+                power: $('#adminRole').val(),
+                asset: $('#asset').val()
+            }
+            if (!params.username || !params.password) {
+                layer.confirm('用户名、密码不能为空')
+            } else if (params.password !== password2) {
+                layer.confirm('两次密码不一致')
+            } else {
+                $.post(url, params, (data) => {
 
-            $("#form-admin-add").validate({
-                rules: {
-                    adminName: {
-                        required: true,
-                        minlength: 4,
-                        maxlength: 16
-                    },
-                    password: {
-                        required: true,
-                    },
-                    password2: {
-                        required: true,
-                        equalTo: "#password"
-                    },
-                    phone: {
-                        required: true,
-                        isPhone: true,
-                    },
-                    email: {
-                        required: true,
-                        email: true,
-                    },
-                    adminRole: {
-                        required: true,
-                    },
-                },
-                onkeyup: false,
-                focusCleanup: true,
-                success: "valid",
-                submitHandler: function(form) {
-                    $(form).ajaxSubmit({
-                        type: 'post',
-                        url: "xxxxxxx",
-                        success: function(data) {
-                            layer.msg('添加成功!', {
-                                icon: 1,
-                                time: 1000
-                            });
-                        },
-                        error: function(XmlHttpRequest, textStatus, errorThrown) {
-                            layer.msg('error!', {
-                                icon: 1,
-                                time: 1000
-                            });
-                        }
-                    });
-                    var index = parent.layer.getFrameIndex(window.name);
-                    parent.$('.btn-refresh').click();
-                    parent.layer.close(index);
-                }
-            });
-        });
+                    layer.confirm(data.msg)
+                })
+            }
+
+        }
     </script>
-    <!--/请在上方写此页面业务相关的脚本-->
 </body>
 
 </html>
