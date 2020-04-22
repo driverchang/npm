@@ -1,0 +1,23 @@
+#asset-updata
+{
+    width:500px;
+
+    height:400px;
+
+    position:absolute;
+
+    top:50%;
+
+    left:50%;
+
+    margin-top:-200px;
+
+    margin-left:-250px;
+
+    border:1px solid #ffffcc;
+}
+
+#asset-updata-submit
+{
+    width: 150px;
+}

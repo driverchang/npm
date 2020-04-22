@@ -1,0 +1,54 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+.left {
+    float: left;
+    width: 200px;
+    height: 900px;
+    background-color: #3C3C3C;
+}
+.right {
+    float: left;
+    width: calc(100% - 200px);
+    height: 900px;
+
+}
+
+.header{
+    text-align: center;
+    width: calc(100%);
+    height: 100px;
+    background-color: #1ab394;
+}
+
+/* 左侧导航*/
+
+ul,a{
+    font-size: 20px;
+    list-style: none;
+    text-decoration: none;
+    background-color: #3C3C3C;
+    color: #FFFFFF;
+    width: 200px;
+    text-align: center;
+    border: 0px solid black;
+    border-radius: 5px;
+    margin-top: 1px;
+}
+a{
+    display: block;
+}
+
+.plat{
+    display: none;
+}
+
+.nav:hover .plat{
+    display: block;
+    clear: both;
+}
+.plat li:hover>a{
+    background-color: dimgrey;
+}

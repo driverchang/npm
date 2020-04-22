@@ -1,0 +1,27 @@
+#Login
+{
+    width:500px;
+
+    height:400px;
+
+    position:absolute;
+
+    top:50%;
+
+    left:50%;
+
+    margin-top:-200px;
+
+    margin-left:-250px;
+
+    border:1px solid #ffffcc;
+}
+#login-lable
+{
+    text-align: center;
+}
+
+#login-submit
+{
+    width: 150px;
+}
