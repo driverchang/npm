@@ -14,28 +14,41 @@ router.post('/login', (req, res) => {
     let { username, password } = req.body
 
     if (!username || !password) {
-        return res.send({ err: -3, msg: '用户名或密码为空' })
+
+        res.send({ err: -3, msg: '用户名或密码为空' })
+    } else {
+        userModle.find({ username })
+            .then((data) => {
+
+                if (data.length === 0) {
+
+                    return res.send({ err: -1, msg: '用户名不存在' })
+
+                } else {
+
+                    return userModle.find({ username, password })
+                }
+            })
+            .then((data) => {
+                if (data.length == 0) {
+
+                    res.send({ err: -2, msg: '密码错误' })
+                } else if (data.length > 0) {
+
+                    res.send({ err: 0, msg: '登录成功' })
+                    let log_time = getTime.getTime()
+                    return loginlogModle.insertMany({ username, log_time })
+                }
+            })
+            .then(() => {
+                //no code
+            })
+            .catch((err) => {
+
+                res.send({ err: -4, msg: '其他错误' })
+            })
     }
-    userModle.find({ username })
-        .then((data) => {
-            if (data.length > 0) {
-                return userModle.find({ username, password })
-            } else if (data.length === 0) {
-                res.send({ err: -1, msg: '用户名不存在' })
-            }
-        })
-        .then((data) => {
-            if (data.length > 0) {
-                res.send({ err: 0, msg: '登录成功' })
-                let log_time = getTime.getTime()
-                loginlogModle.insertMany({ username, log_time })
-            } else {
-                res.send({ err: -2, msg: '密码错误' })
-            }
-        })
-        .catch((err) => {
-            res.send({ err: -4, msg: '其他错误' })
-        })
+
 })
 
 //添加用户
@@ -68,7 +81,7 @@ router.post('/del', (req, res) => {
     let { username } = req.body
     userModle.deleteOne({ username })
         .then((data) => {
-            res.send({ er: 0, msg: '删除成功' })
+            res.send({ err: 0, msg: '删除成功' })
         })
         .catch((err) => {
             res.send({ err: -1, msg: '删除失败' })
@@ -78,7 +91,7 @@ router.post('/del', (req, res) => {
 //更新用户
 router.post('/update', (req, res) => {
     let { _id, username, password, power, asset } = req.body
-    console.log({ _id, username, password, power, asset })
+
     userModle.updateOne({ _id }, { username, password, power, asset })
         .then((data) => {
             res.send({ err: 0, msg: '更新成功' })
@@ -93,6 +106,18 @@ router.post('/list', (req, res) => {
     userModle.find({})
         .then((data) => {
             res.send({ err: 0, msg: '查询成功', list: data })
+
+        })
+        .catch((err) => {
+            res.send({ err: -1, msg: '查询失败' })
+        })
+})
+
+router.post('/find', (req, res) => {
+    let { _id } = req.body
+    userModle.find({ _id })
+        .then((data) => {
+            res.send({ err: 0, msg: '查询成功', data: data })
 
         })
         .catch((err) => {

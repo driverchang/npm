@@ -20,16 +20,16 @@
 <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
 <script>DD_belatedPNG.fix('*');</script>
 <![endif]-->
-    <title>添加用户</title>
+    <title>更新用户</title>
     <meta name="keywords" content="H-ui.admin v3.1,H-ui网站后台模版,后台模版下载,后台管理系统模版,HTML后台模版下载">
     <meta name="description" content="H-ui.admin v3.1，是一款由国人开发的轻量级扁平化网站后台模板，完全免费开源的网站后台管理系统模版，适合中小型CMS后台系统。">
 </head>
 
 <body>
     <article class="page-container">
-        <div class="form form-horizontal" id="form-admin-add">
+        <div class="form form-horizontal" id="form-admin-update">
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>用户名：</label>
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>新用户名：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <input type="text" class="input-text" value="" placeholder="" id="adminName" name="adminName">
                 </div>
@@ -43,7 +43,7 @@
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input type="password" class="input-text" autocomplete="off" placeholder="确认新密码" id="password2" name="password2">
+                    <input type="password" class="input-text" autocomplete="off" placeholder="确认密码" id="password2" name="password2">
                 </div>
             </div>
 
@@ -57,7 +57,7 @@
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3">角色：</label>
                 <div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
-			<select class="select" name="adminRole" size="1">
+			<select class="select" id="adminRole" size="1">
 				<option value="0">超级管理员</option>
 				<option value="1">总编</option>
 				<option value="2">栏目主辑</option>
@@ -87,12 +87,14 @@
     <script src="https://cdn.bootcss.com/jquery/3.5.0/jquery.js"></script>
     <script type="text/javascript">
         //添加用户信息
+
+
+
         function submit() {
-            let id = window.localStorage.getItem('username')
-            alert(id)
-            let url = 'http://localhost:3005/user/add'
+            let url = 'http://localhost:3005/user/update'
             let password2 = $('#password2').val()
             let params = {
+                _id: window.localStorage.getItem('user_id'),
                 username: $('#adminName').val(),
                 password: $('#password').val(),
                 power: $('#adminRole').val(),
@@ -101,7 +103,9 @@
             if (!params.username || !params.password) {
                 layer.confirm('用户名、密码不能为空')
             } else if (params.password !== password2) {
-                console.log(params.password, password2)
+                console.log(params.password)
+                console.log(params.username)
+                console.log(password2)
                 layer.confirm('两次密码不一致')
             } else {
                 $.post(url, params, (data) => {
@@ -114,7 +118,6 @@
 
                 })
             }
-
 
         }
     </script>
