@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="Bookmark" href="/favicon.ico">
+    <link rel="Shortcut Icon" href="/favicon.ico" />
+    <!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+    <link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="static/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/style.css" />
+    <!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+    <title>会话日志</title>
+</head>
+
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 日志审计 <span class="c-gray en">&gt;</span> 会话日志 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);"
+            title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="page-container">
+        <div> <span class="r" id="num"></span> </div>
+        <table class="table table-border table-bordered table-bg">
+            <thead>
+                <tr>
+                    <th scope="col" colspan="9">会话日志列表</th>
+                </tr>
+                <tr class="text-c">
+                    <th width="40">序号</th>
+                    <th width="200 ">用户名</th>
+                    <th>指令</th>
+                    <th width="400 ">时间</th>
+
+                </tr>
+            </thead>
+            <tbody id="tbody">
+
+            </tbody>
+        </table>
+    </div>
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript " src="lib/jquery/1.9.1/jquery.min.js "></script>
+    <script type="text/javascript " src="lib/layer/2.4/layer.js "></script>
+    <script type="text/javascript " src="static/h-ui/js/H-ui.min.js "></script>
+    <script type="text/javascript " src="static/h-ui.admin/js/H-ui.admin.js "></script>
+    <!--/_footer 作为公共模版分离出去-->
+
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript " src="lib/My97DatePicker/4.8/WdatePicker.js "></script>
+    <script type="text/javascript " src="lib/datatables/1.10.0/jquery.dataTables.min.js "></script>
+    <script type="text/javascript " src="lib/laypage/1.2/laypage.js "></script>
+    <script type="text/javascript ">
+        //获取列表
+        function getconversationlogList() {
+            $.post('http://localhost:3005/conversationlog/list', (data) => {
+                if (data.err == 0) {
+                    renderList(data.list)
+                } else {
+                    layer.confirm('请刷新页面')
+                }
+            })
+
+        }
+
+        //渲染表单
+
+        function renderList(data) {
+
+            let str = ''
+            let message = ''
+            let count = 0
+            for (let index = 0; index < data.length; ++index) {
+                let tmpstr = `
+                <tr class="text-c ">
+                    <td>${index + 1}</td>
+                    <td>${data[index].name}</td>
+                    <td>${data[index].action}</td>
+                    <td>${data[index].con_time}</td>
+                </tr>
+                `
+                str += tmpstr
+                    ++count
+
+            }
+            message = '共有数据：' + count + ' 条'
+            $('#tbody').html(str)
+            $('#num').html(message)
+        }
+
+        getconversationlogList()
+    </script>
+</body>
+
+
+</html>

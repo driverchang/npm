@@ -1,0 +1,59 @@
+</html>
+
+<!doctype html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="../../node_modules/xterm/css/xterm.css" />
+    <script src="../../node_modules/xterm/lib/xterm.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.5.0/jquery.js"></script>
+</head>
+
+<body>
+    <div id="top">
+        <label>请输入指令</label>
+        <input id="order" type="text" />
+        <input id="button" type="submit" value="发送" onclick="sendMessage()" />
+    </div>
+    <div id="terminal"></div>
+    <script>
+        let username = window.localStorage.getItem('username')
+        let params = {
+            username: username
+        }
+        $.post('http://localhost:3005/conversationlog/log', params, (data) => {
+
+        })
+        var term = new Terminal();
+        term.open(document.getElementById('terminal'))
+
+        const ws = new WebSocket('ws://localhost:8080/')
+        ws.onopen = () => {
+            console.log('服务已连接')
+
+        }
+        ws.onmessage = (msg) => {
+            term.write(msg.data + '\n')
+        }
+
+        ws.onclose = () => {
+            alert('服务器关闭')
+        }
+
+        function sendMessage() {
+            let str = $('#order').val()
+            if (str.length == 0) {
+                alert('指令不能为空')
+
+            } else {
+                ws.send(str)
+                    //    document.getElementById('order').innerHTML('')
+                $('#order').val('')
+            }
+
+
+        }
+    </script>
+</body>
+
+</html>
