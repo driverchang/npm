@@ -39,7 +39,8 @@
                     <th width="40">序号</th>
                     <th width="200 ">用户名</th>
                     <th>资产名</th>
-                    <th width="130 ">权限</th>
+                    <th>资产IP</th>
+                    <th width="130 ">角色</th>
                     <th width="150 ">操作</th>
                 </tr>
             </thead>
@@ -60,7 +61,15 @@
     <script type="text/javascript " src="lib/datatables/1.10.0/jquery.dataTables.min.js "></script>
     <script type="text/javascript " src="lib/laypage/1.2/laypage.js "></script>
     <script type="text/javascript ">
-        //显示列表
+        var username = window.localStorage.getItem('username')
+        var power = ''
+        let params = {
+            username: username
+        }
+        $.post('http://localhost:3005/user/find', params, (data) => {
+                power = data.list[0].power
+            })
+            //显示列表
         function getUserList() {
             $.post('http://localhost:3005/user/list', (data) => {
                 if (data.err == 0) {
@@ -82,10 +91,11 @@
                     <td>${index + 1}</td>
                     <td>${data[index].username}</td>
                     <td>${data[index].asset}</td>
-                    <td>${data[index].power}</td>
-                    <td class="td-manage "> <a title="编辑 " href="javascript:; " onclick="admin_edit( '用户编辑', 'admin-update.html', '${data[index]._id}', '800', '500') " class="ml-5 " style="text-decoration:none ">
+                    <td>${data[index].assetip}</td>
+                    <td>${change(data[index].power)}</td>
+                    <td class="td-manage "> <a title="编辑 " href="javascript:; " onclick="admin_edit( '用户编辑', 'admin-update.html', '${data[index]._id}', '${data[index].power}','800', '500') " class="ml-5 " style="text-decoration:none ">
                     <i class="Hui-iconfont
-                        ">&#xe6df;</i></a> <a title="删除 " href="javascript:; " onclick="admin_del(this, '${data[index].username}') "
+                        ">&#xe6df;</i></a> <a title="删除 " href="javascript:; " onclick="admin_del(this, '${data[index].username}','${data[index].power}') "
                             class="ml-5 " style="text-decoration:none "><i class="Hui-iconfont ">&#xe6e2;</i></a></td>
                 </tr>
                 `
@@ -104,32 +114,61 @@
             layer_show(title, url, w, h);
         }
         /*管理员-删除*/
-        function admin_del(obj, name) {
+        function admin_del(obj, name, pow) {
 
+            if (power >= pow) {
+                layer.confirm('你没有权限删除该角色类型的用户')
+            } else {
+                let params = {
+                    admin: window.localStorage.getItem('username'),
+                    username: name
+                }
+                layer.confirm('确认要删除吗？', function(index) {
+                    $.post('http://localhost:3005/user/del', params, (data) => {
 
-            let params = {
-                admin: window.localStorage.getItem('username'),
-                username: name
-            }
-            layer.confirm('确认要删除吗？', function(index) {
-                $.post('http://localhost:3005/user/del', params, (data) => {
+                        if (data.err == 0) {
+                            layer.msg('已删除!', {
+                                icon: 2,
+                                time: 1000
+                            })
+                            getUserList()
 
-                    if (data.err == 0) {
-                        layer.msg('已删除!', {
-                            icon: 2,
-                            time: 1000
-                        })
-                        getUserList()
-
-                    }
+                        }
+                    })
                 })
-            })
+            }
+
         }
 
         /*管理员-编辑*/
-        function admin_edit(title, url, id, w, h) {
+        function admin_edit(title, url, id, pow, w, h) {
             window.localStorage.setItem('user_id', id)
-            layer_show(title, url, w, h);
+            if (power >= pow) {
+                layer.confirm('你没有权限更新该角色类型的用户信息')
+            } else {
+                layer_show(title, url, w, h)
+            }
+
+        }
+
+        function change(num) {
+            switch (num) {
+                case 0:
+                    return '系统用户'
+                    break;
+                case 1:
+                    return '超级管理员'
+                    break;
+                case 2:
+                    return '管理员'
+                    break;
+                case 3:
+                    return '用户'
+                    break;
+
+                default:
+                    break;
+            }
         }
 
 

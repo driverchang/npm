@@ -1,59 +1,146 @@
-</html>
-
-<!doctype html>
+<!DOCTYPE HTML>
 <html>
 
 <head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="Bookmark" href="/favicon.ico">
+    <link rel="Shortcut Icon" href="/favicon.ico" />
+    <!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+    <link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="static/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/style.css" />
+    <!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
     <link rel="stylesheet" href="../../node_modules/xterm/css/xterm.css" />
     <script src="../../node_modules/xterm/lib/xterm.js"></script>
+    <script type="text/javascript " src="lib/layer/2.4/layer.js "></script>
     <script src="https://cdn.bootcss.com/jquery/3.5.0/jquery.js"></script>
+    <script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="static/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>
+    <title>web终端</title>
 </head>
 
 <body>
-    <div id="top">
-        <label>请输入指令</label>
-        <input id="order" type="text" />
-        <input id="button" type="submit" value="发送" onclick="sendMessage()" />
-    </div>
-    <div id="terminal"></div>
-    <script>
-        let username = window.localStorage.getItem('username')
-        let params = {
-            username: username
-        }
-        $.post('http://localhost:3005/conversationlog/log', params, (data) => {
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 会话管理 <span class="c-gray en">&gt;</span> web终端 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);"
+            title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="page-container">
+        <div id="top">
+            <label><strong>请输入指令</strong></label>
+            <input type="text" id="order" style="height: 26px;width: 450px;border: 2px solid #0b40ecbd;">
+            <input onclick="sendMessage()" class="btn btn-primary radius" type="submit" value="&nbsp;发&nbsp;&nbsp;送&nbsp;">
+        </div>
+        <div id="terminal"></div>
+        <script>
+            var username = window.localStorage.getItem('username')
+            var power = ''
+            var assetip = ''
+            var asset_us = ''
+            var asset_ps = ''
+            var list = []
+            let params_find = {
+                username: username
+            }
+            $.post('http://localhost:3005/user/find', params_find, (data) => {
+                    power = data.list[0].power
+                    assetip = data.list[0].assetip
+                    asset_us = data.list[0].asset_us
+                    asset_ps = data.list[0].asset_ps
+                })
+                //获取权限列表
+            setTimeout(() => {
+                let param = {
+                        power: power
+                    }
+                    //alert(power)
+                $.post('http://localhost:3005/audit/find', param, (data) => {
+                    list = data.list
+                })
+            }, 800)
+            setTimeout(() => {
+                let params_log = {
+                    username: username,
+                    assetip: assetip,
+                    asset_us: asset_us,
+                    asset_ps: asset_ps
 
-        })
-        var term = new Terminal();
-        term.open(document.getElementById('terminal'))
+                }
+                $.post('http://localhost:3005/conversationlog/log', params_log, (data) => {
 
-        const ws = new WebSocket('ws://localhost:8080/')
-        ws.onopen = () => {
-            console.log('服务已连接')
+                })
 
-        }
-        ws.onmessage = (msg) => {
-            term.write(msg.data + '\n')
-        }
+            }, 800)
 
-        ws.onclose = () => {
-            alert('服务器关闭')
-        }
 
-        function sendMessage() {
-            let str = $('#order').val()
-            if (str.length == 0) {
-                alert('指令不能为空')
+            var term = new Terminal();
+            term.open(document.getElementById('terminal'))
+            term.write('\n')
 
-            } else {
-                ws.send(str)
-                    //    document.getElementById('order').innerHTML('')
-                $('#order').val('')
+            const ws = new WebSocket('ws://localhost:8080/')
+            ws.onopen = () => {
+                console.log('websocker已连接')
+
+            }
+            ws.onmessage = (msg) => {
+                term.write(msg.data)
+            }
+
+            ws.onclose = () => {
+                console.log('服务器关闭websocket')
             }
 
 
-        }
-    </script>
+            //发送指令
+            function sendMessage() {
+                let str = $('#order').val()
+                if (str.length == 0) {
+                    layer.confirm('指令不能为空')
+
+                } else {
+                    //对指令进行权限判断
+                    let count = 0
+                    for (let index = 0; index < list.length; ++index) {
+                        if (str.indexOf(list[index].action) != -1) {
+                            ++count
+                        }
+                    }
+                    if (count != 0) {
+                        layer.confirm('你没有使用该指令的权限，请重新输入指令')
+                        $('#order').val('')
+                    } else {
+                        ws.send(str)
+                        $('#order').val('')
+                    }
+
+                }
+
+
+            }
+        </script>
+        <!--_footer 作为公共模版分离出去-->
+        <script type="text/javascript " src="lib/jquery/1.9.1/jquery.min.js "></script>
+        <script type="text/javascript " src="lib/layer/2.4/layer.js "></script>
+        <script type="text/javascript " src="static/h-ui/js/H-ui.min.js "></script>
+        <script type="text/javascript " src="static/h-ui.admin/js/H-ui.admin.js "></script>
+        <!--/_footer 作为公共模版分离出去-->
+
+        <!--请在下方写此页面业务相关的脚本-->
+        <script type="text/javascript " src="lib/My97DatePicker/4.8/WdatePicker.js "></script>
+        <script type="text/javascript " src="lib/datatables/1.10.0/jquery.dataTables.min.js "></script>
+        <script type="text/javascript " src="lib/laypage/1.2/laypage.js "></script>
+
 </body>
 
 </html>

@@ -57,7 +57,7 @@
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3">角色：</label>
                 <div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
-			<select class="select" name="adminRole" size="1">
+			<select class="select" id="adminRole" size="1">
 				<option value="0">超级管理员</option>
 				<option value="1">总编</option>
 				<option value="2">栏目主辑</option>
@@ -89,8 +89,8 @@
         //添加用户信息
         function submit() {
             let id = window.localStorage.getItem('username')
-            alert(id)
-            let url = 'http://localhost:3005/user/add'
+
+            let url = 'http://localhost:3010/user/add'
             let password2 = $('#password2').val()
             let params = {
                 username: $('#adminName').val(),

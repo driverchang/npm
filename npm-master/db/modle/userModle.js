@@ -4,7 +4,10 @@ var userSchema = new mongoose.Schema({
     username: { type: String, required: true },
     password: { type: String, required: true },
     power: { type: Number, default: 3 },
-    asset: { type: String }
+    asset: { type: String },
+    assetip: { type: String, default: '47.101.51.46' },
+    asset_us: { type: String, default: 'root' },
+    asset_ps: { type: String, default: 'Super2316173893' }
 
 });
 

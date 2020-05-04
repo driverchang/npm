@@ -11,6 +11,7 @@
 <script type="text/javascript" src="lib/html5shiv.js"></script>
 <script type="text/javascript" src="lib/respond.min.js"></script>
 <![endif]-->
+
     <link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
     <link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/H-ui.admin.css" />
     <link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.8/iconfont.css" />
@@ -54,6 +55,7 @@
     <script type="text/javascript" src="lib/layer/2.4/layer.js"></script>
     <script type="text/javascript" src="static/h-ui/js/H-ui.min.js"></script>
     <script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>
+
     <!--/_footer 作为公共模版分离出去-->
 
     <!--请在下方写此页面业务相关的脚本-->
@@ -70,6 +72,8 @@
             }
             if (!params.assetname || !params.ip) {
                 layer.confirm('资产名和IP不能为空')
+            } else if (isValidIP($('#IP').val()) == false) {
+                layer.confirm('IP格式错误，请输入正确格式的IP')
             } else {
                 $.post(url, params, (data) => {
 
@@ -81,8 +85,13 @@
 
                 })
             }
+        }
 
 
+        //判断ip是否为正确ip
+        function isValidIP(ip) {
+            var reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+            return reg.test(ip);
         }
     </script>
     <!--/请在上方写此页面业务相关的脚本-->

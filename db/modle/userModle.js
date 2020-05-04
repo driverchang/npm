@@ -4,7 +4,9 @@ var userSchema = new mongoose.Schema({
     username: { type: String, required: true },
     password: { type: String, required: true },
     power: { type: Number, default: 3 },
-    asset: { type: String }
+    asset: [
+        [String]
+    ]
 
 });
 

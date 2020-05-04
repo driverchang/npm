@@ -63,7 +63,7 @@
         
         //显示列表
         function getUserList() {
-            $.post('http://localhost:3005/user/list',(data)=>{
+            $.post('http://localhost:3010/user/list',(data)=>{
             if(data.err == 0)
             {
                 renderList(data.list)

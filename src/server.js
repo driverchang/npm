@@ -25,7 +25,7 @@ app.use('/public', express.static('../static'))
 
 
 
-app.listen(3005, () => {
+app.listen(3010, () => {
     console.log('server start')
 
 })

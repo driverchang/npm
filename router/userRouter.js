@@ -56,6 +56,8 @@ router.post('/add', (req, res) => {
 
 
     let { username, password, power, asset } = req.body
+    console.log(req.body)
+    console.log(asset)
 
     userModle.find({ username })
         .then((data) => {

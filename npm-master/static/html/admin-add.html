@@ -43,7 +43,7 @@
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input type="password" class="input-text" autocomplete="off" placeholder="确认新密码" id="password2" name="password2">
+                    <input type="password" class="input-text" autocomplete="off" placeholder="确认密码" id="password2" name="password2">
                 </div>
             </div>
 
@@ -53,15 +53,21 @@
                     <input type="text" class="input-text" value="" placeholder="" id="asset" name="phone">
                 </div>
             </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span>资产IP：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="" id="assetip" name="phone">
+                </div>
+            </div>
 
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3">角色：</label>
                 <div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
-			<select class="select" name="adminRole" size="1">
-				<option value="0">超级管理员</option>
-				<option value="1">总编</option>
-				<option value="2">栏目主辑</option>
-				<option value="3">栏目编辑</option>
+			<select class="select" id="adminRole" size="1">
+				<option value="0">系统用户</option>
+				<option value="1">超级管理员</option>
+				<option value="2">管理员</option>
+				<option value="3">用户</option>
 			</select>
 			</span> </div>
             </div>
@@ -86,7 +92,15 @@
     <script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.js"></script>
     <script src="https://cdn.bootcss.com/jquery/3.5.0/jquery.js"></script>
     <script type="text/javascript">
-        //添加用户信息
+        var username = window.localStorage.getItem('username')
+        var power = ''
+        let params = {
+            username: username
+        }
+        $.post('http://localhost:3005/user/find', params, (data) => {
+                power = data.list[0].power
+            })
+            //添加用户信息
         function submit() {
             let url = 'http://localhost:3005/user/add'
             let password2 = $('#password2').val()
@@ -95,13 +109,19 @@
                 username: $('#adminName').val(),
                 password: $('#password').val(),
                 power: $('#adminRole').val(),
-                asset: $('#asset').val()
+                asset: $('#asset').val(),
+                assetip: $('#assetip').val()
             }
             if (!params.username || !params.password) {
                 layer.confirm('用户名、密码不能为空')
             } else if (params.password !== password2) {
                 console.log(params.password, password2)
                 layer.confirm('两次密码不一致')
+            } else if (power >= $('#adminRole').val()) {
+                layer.confirm('你没有权限创建该角色类型的用户')
+
+            } else if (isValidIP($('#assetip').val()) == false) {
+                layer.confirm('IP格式错误，请输入正确格式的IP')
             } else {
                 $.post(url, params, (data) => {
 
@@ -115,6 +135,11 @@
             }
 
 
+        }
+
+        function isValidIP(ip) {
+            var reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+            return reg.test(ip);
         }
     </script>
 </body>

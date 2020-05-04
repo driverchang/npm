@@ -60,43 +60,67 @@
     <script type="text/javascript " src="lib/laypage/1.2/laypage.js "></script>
     <script type="text/javascript ">
         /*
-                                                                                                                                             参数解释：
-                                                                                                                                             title	标题
-                                                                                                                                             url		请求的url
-                                                                                                                                             id		需要操作的数据id
-                                                                                                                                             w		弹出层宽度（缺省调默认值）
-                                                                                                                                            */
-        /*管理员-增加*/
-        let username = window.localStorage.getItem('username')
+                                                                                                                                                                                                                                参数解释：
+                                                                                                                                                                                                                                title	标题
+                                                                                                                                                                                                                                url		请求的url
+                                                                                                                                                                                                                                id		需要操作的数据id
+                                                                        w		弹出层宽度（缺省调默认值）
+                                                                        */
+
+        var username = window.localStorage.getItem('username')
+        var power = ''
+        let params = {
+            username: username
+        }
+        $.post('http://localhost:3005/user/find', params, (data) => {
+            power = data.list[0].power
+        })
+
+        /*资产-增加*/
 
         function admin_add(title, url, w, h) {
-            layer_show(title, url, w, h);
+            if (power < 2) {
+                layer_show(title, url, w, h)
+            } else {
+                layer.confirm('你没有权限创建资产')
+            }
+
         }
-        /*管理员-删除*/
+        /*资产-删除*/
         function admin_del(obj, name) {
             let params = {
                 admin: username,
                 assetname: name
             }
-            layer.confirm('确认要删除吗？', function(index) {
-                $.post('http://localhost:3005/asset/del', params, (data) => {
+            if (power < 2) {
+                layer.confirm('确认要删除吗？', function(index) {
+                    $.post('http://localhost:3005/asset/del', params, (data) => {
 
-                    if (data.err == 0) {
-                        layer.msg('已删除!', {
-                            icon: 2,
-                            time: 1000
-                        })
-                        getAssetList()
+                        if (data.err == 0) {
+                            layer.msg('已删除!', {
+                                icon: 2,
+                                time: 1000
+                            })
+                            getAssetList()
 
-                    }
+                        }
+                    })
                 })
-            })
+            } else {
+                layer.confirm('你没有权限删除资产')
+            }
+
         }
 
-        /*管理员-编辑*/
+        /*资产-编辑*/
         function admin_edit(title, url, id, w, h) {
             window.localStorage.setItem('asset_id', id)
-            layer_show(title, url, w, h);
+            if (power < 2) {
+                layer_show(title, url, w, h)
+            } else {
+                layer.confirm('你没有权限更新资产')
+            }
+
         }
 
         //获取列表

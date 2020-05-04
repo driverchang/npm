@@ -71,6 +71,8 @@
             }
             if (!params.assetname || !params.ip) {
                 layer.confirm('资产名和IP不能为空')
+            } else if (isValidIP($('#IP').val()) == false) {
+                layer.confirm('IP格式错误，请输入正确格式的IP')
             } else {
                 $.post(url, params, (data) => {
 
@@ -84,6 +86,11 @@
             }
 
 
+        }
+        //判断ip是否为正确ip
+        function isValidIP(ip) {
+            var reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+            return reg.test(ip);
         }
     </script>
     <!--/请在上方写此页面业务相关的脚本-->
