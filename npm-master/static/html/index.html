@@ -35,13 +35,14 @@
                 <span class="logo navbar-slogan f-l mr-10 hidden-xs"></span>
                 <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                     <ul class="cl">
+                        <li><a href="#">用户名称：</a></li>
                         <li class="dropDown dropDown_hover">
-                            <a href="#" class="dropDown_A"> admin<i class="Hui-iconfont">&#xe6d5;</i></a>
+                            <a href="#" class="dropDown_A" id="name"> <i class="Hui-iconfont">&#xe6d5;</i></a>
                             <ul class="dropDown-menu menu radius box-shadow">
-                                <li><a href="#" onclick="changeUser()">切换账户</a></li>
-                                <li><a href="javascript:window.opener=null;window.open('','_self');window.close();">退出</a></li>
                             </ul>
                         </li>
+                        <li><a href="#" onclick="changeUser()">切换账户</a></li>
+                        <li><a href="#" onclick="destory()">注销</a></li>
                         <li id="Hui-skin" class="dropDown right dropDown_hover"> <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
                             <ul class="dropDown-menu menu radius box-shadow">
                                 <li><a href="javascript:;" data-val="default" title="默认（黑色）">默认（黑色）</a></li>
@@ -92,6 +93,7 @@
                         </li>
                         <li><a data-href="action-log.html" data-title="操作日志" href="javascript:void(0)">操作日志</a></li>
                         <li><a data-href="conversation-log.html" data-title="会话日志" href="javascript:void(0)">会话日志</a></li>
+                        <li><a data-href="audit.html" data-title="审计规则" href="javascript:void(0)">审计规则</a></li>
                     </ul>
                 </dd>
             </dl>
@@ -138,6 +140,8 @@
     <script type="text/javascript" src="lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
 
     <script>
+        $('#name').text(window.localStorage.getItem('username'))
+
         function changeUser() {
             window.location.href = ('./login.html')
         }
@@ -146,6 +150,27 @@
             window.opener = null;
             window.open('', '_self');
             window.close();
+        }
+
+        function destory() {
+            let params = {
+                admin: window.localStorage.getItem('username'),
+                username: window.localStorage.getItem('username')
+            }
+            layer.confirm('确认要注销吗？', function(index) {
+                $.post('http://localhost:3005/user/del', params, (data) => {
+
+                    if (data.err == 0) {
+                        layer.msg('已注销!', {
+                            icon: 2,
+                            time: 1000
+                        })
+                        window.location.href = ('./login.html')
+
+                    }
+                })
+            })
+
         }
     </script>
 

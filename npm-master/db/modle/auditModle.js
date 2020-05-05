@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 var auditSchema = new mongoose.Schema({
     power: { type: Number, required: true },
-    action: { type: String },
+    order: { type: String },
 
 });
 

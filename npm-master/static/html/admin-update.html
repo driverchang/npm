@@ -35,15 +35,15 @@
                 </div>
             </div>
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>初始密码：</label>
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>新密码：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input type="password" class="input-text" autocomplete="off" value="" placeholder="密码" id="password" name="password">
+                    <input type="password" class="input-text" autocomplete="off" placeholder="新密码" id="password2" name="password2">
                 </div>
             </div>
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认新密码：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input type="password" class="input-text" autocomplete="off" placeholder="确认密码" id="password2" name="password2">
+                    <input type="password" class="input-text" autocomplete="off" placeholder="确认新密码" id="password3" name="password3">
                 </div>
             </div>
 
@@ -57,6 +57,18 @@
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span>资产IP：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <input type="text" class="input-text" value="" placeholder="" id="assetip" name="phone">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span>远程服务器用户名：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="" id="asset_us" name="phone">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span>远程服务器用户密码：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="" id="asset_ps" name="phone">
                 </div>
             </div>
             <div class="row cl">
@@ -103,22 +115,21 @@
 
         function submit() {
             let url = 'http://localhost:3005/user/update'
-            let password2 = $('#password2').val()
+            let password2 = $('#password3').val()
             let params = {
                 admin: window.localStorage.getItem('username'),
                 _id: window.localStorage.getItem('user_id'),
                 username: $('#adminName').val(),
-                password: $('#password').val(),
+                password: $('#password2').val(),
                 power: $('#adminRole').val(),
                 asset: $('#asset').val(),
-                assetip: $('#assetip').val()
+                assetip: $('#assetip').val(),
+                asset_us: $('#asset_us').val(),
+                asset_ps: $('#asset_ps').val()
             }
             if (!params.username || !params.password) {
                 layer.confirm('用户名、密码不能为空')
             } else if (params.password !== password2) {
-                console.log(params.password)
-                console.log(params.username)
-                console.log(password2)
                 layer.confirm('两次密码不一致')
             } else if (isValidIP($('#assetip').val()) == false) {
                 layer.confirm('IP格式错误，请输入正确格式的IP')

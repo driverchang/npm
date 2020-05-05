@@ -84,7 +84,12 @@ router.post('/add', (req, res) => {
 //删除用户
 router.post('/del', (req, res) => {
     let { admin, username } = req.body
-    let action = '删除用户' + username
+    let action = ''
+    if (admin == username) {
+        action = username + '注销用户'
+    } else {
+        action = '删除用户' + username
+    }
     let action_time = getTime.getTime()
     userModle.deleteOne({ username })
         .then((data) => {
@@ -102,12 +107,12 @@ router.post('/del', (req, res) => {
 
 //更新用户
 router.post('/update', (req, res) => {
-    let { admin, _id, username, password, power, asset } = req.body
+    let { admin, _id, username, password, power, asset, assetip, asset_us, asset_ps } = req.body
     let action = '更新用户' + username
     let action_time = getTime.getTime()
+    userModle.updateOne({ _id }, { username, password, power, asset, assetip, asset_us, asset_ps })
 
-    userModle.updateOne({ _id }, { username, password, power, asset })
-        .then((data) => {
+    .then((data) => {
             res.send({ err: 0, msg: '更新成功' })
             return actionlogModle.insertMany({ admin, action, action_time })
         })
